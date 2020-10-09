@@ -64,4 +64,3 @@ def DetectNegative(imgToDetect, NTemplateList, rectangles, negetiveThreshold):
                 tempRectangles.append(rec)
 
         rectangles = tempRectangles
-        print(len(rectangles))

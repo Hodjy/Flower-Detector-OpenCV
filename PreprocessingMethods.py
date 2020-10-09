@@ -10,7 +10,7 @@ NegetiveTemplateNames = glob.glob("ReferenceImages/N/*.png")
 imagesList = [cv2.imread(img, isColorImage) for img in images]
 PTemplateList = [cv2.imread(img, isColorImage) for img in PositiveTemplateNames]
 NTemplateList = [cv2.imread(img, isColorImage) for img in NegetiveTemplateNames]
-FilePathForProcessedImages = "ReferenceImages/ImagesToDetect/NewImages/{0}.png"
+FilePathForProcessedImages = "ReferenceImages/ImagesToDetect/NewSize/{0}.png"
 FilePathForProcessedPTemplates = "ReferenceImages/P/"
 FilePathForProcessedNTemplates = "ReferenceImages/N/"
 bigPath = "Big/{0}.png"
@@ -20,8 +20,8 @@ smallPath = "Small/{0}.png"
 
 def __preprocessImage(img, newSize):
     img = cv2.resize(img, newSize)
-    cv2.Laplacian(img, cv2.CV_16U, img, 3)
-    cv2.GaussianBlur(img, (3, 3), 3, img)
+    #cv2.Laplacian(img, cv2.CV_16U, img, 3)
+    #cv2.GaussianBlur(img, (3, 3), 3, img)
 
     return img
 

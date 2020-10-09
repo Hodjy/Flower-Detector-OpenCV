@@ -4,14 +4,14 @@ import ObjectDetectionMethods as ODM
 import PreprocessingMethods as PM
 
 isColorImage = 1 # 1 for color, 0 for greyscale
-PositiveTemplateNames = glob.glob("ReferenceImages/P/4.png")
-NegetiveTemplateNames = glob.glob("ReferenceImages/N/*.png")
+PositiveTemplateNames = glob.glob("ReferenceImages/P/Medium/31.png")
+NegetiveTemplateNames = glob.glob("ReferenceImages/N/Big/*.png")
 PTemplateList = [cv2.imread(img, isColorImage) for img in PositiveTemplateNames]
 NTemplateList = [cv2.imread(img, isColorImage) for img in NegetiveTemplateNames]
-imgToDetect = cv2.imread("ReferenceImages/ImagesToDetect/4.jpg", isColorImage)
+imgToDetect = cv2.imread("ReferenceImages/ImagesToDetect/NewSize/3.png", isColorImage)
 rectangles = []
 rectanglesEps = 0.4
-positiveThreshold = 0.5
+positiveThreshold = 0.68
 negetiveThreshold = 0.9
 
 
