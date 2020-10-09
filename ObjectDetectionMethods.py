@@ -44,8 +44,6 @@ def __detectFalsePositiveByNegetiveTemplate(imgToDetect, rec, template, threshol
 def __detectObjectByTemplate(imgToDetect, template, threshold, rectangles):  # inserts result values into rectangles.
     templateWidth = template.shape[1]
     templateHeight = template.shape[0]
-    # template = cv2.resize(template, None, None, 0.9, 0.9, cv2.INTER_CUBIC)
-    cv2.Laplacian(template, cv2.CV_16U, template, 3)  # sharpen template for more accuracy
     matchResult = cv2.matchTemplate(imgToDetect, template, cv2.TM_CCOEFF_NORMED)
     locations = np.where(matchResult >= threshold)  # get all the suspect points from the result by the threshold.
     locations = list(zip(*locations[::-1]))  # change the presentation type of the points into tuples.
@@ -59,8 +57,6 @@ def DetectPositive(imgToDetect, PTemplateList, positiveThreshold, rectangles):
 def DetectNegative(imgToDetect, NTemplateList, rectangles, negetiveThreshold):
     for template in NTemplateList:
         tempRectangles = []
-        #   template = cv2.resize(template, None, None, 0.1, 0.1, cv2.INTER_CUBIC)
-        #   cv2.Laplacian(template, cv2.CV_16U, template, 3)  # sharpen template for more accuracy
         for rec in rectangles:
             isFalsePositive = __detectFalsePositiveByNegetiveTemplate(imgToDetect, rec, template,
                                                                     negetiveThreshold)
