@@ -2,75 +2,76 @@ import cv2
 import numpy as np
 
 
-def __mergeRectangleLists(firstList, secondList):
-    newList = []
-    for item in firstList:
-        newList.append(item)
-
-    for item in secondList:
-        newList.append(item)
-
-    return newList
-
-
 def __detectFalsePositiveByNegetiveTemplate(imgToDetect, rec, template, threshold):
-    x = rec[0] #Taking the top left and the bottom right points of the template
-    y = rec[1] #And creating the region of interest (ROI) from the image.
-    x2 = rec[2] #
-    y2 = rec[3] #
+    # Taking the top left and the bottom right points of the template
+    # and creating the region of interest (ROI) from the image.
+    x = rec[0]
+    y = rec[1]
+    x2 = rec[2]
+    y2 = rec[3]
     roi = imgToDetect[y:y2, x:x2]
     isFalsePositive = False
+    #Check if template is equal to roi.
     isTemplateSizeEqualToRoi = roi.shape[0] == template.shape[0] and roi.shape[1] == template.shape[1]
-
-    if isTemplateSizeEqualToRoi:  # If smaller check for false positive.
-        matchResult = cv2.matchTemplate(roi, template, cv2.TM_CCOEFF_NORMED) # In the same way we found positives,
-        locations = np.where(matchResult >= threshold)                       # we look for negative with the
-        locations = list(zip(*locations[::-1]))                              # template on the ROI
-        if len(locations): # If we have locations then it means we have a false positive.
-            #cv2.imshow("1", roi)
-            #cv2.imshow("2", template)
-            #cv2.imshow("3", matchResult)
-            #cv2.waitKey()
+    # If smaller check for false positive.
+    if isTemplateSizeEqualToRoi:
+        # In the same way we found positives, we look for negative with the template on the ROI
+        matchResult = cv2.matchTemplate(roi, template, cv2.TM_CCOEFF_NORMED)
+        locations = np.where(matchResult >= threshold)
+        locations = list(zip(*locations[::-1]))
+        # If we have data in locations then it means we have a false positive.
+        if len(locations):
             isFalsePositive = True
 
     return isFalsePositive
 
 
-def __createRectanglesFromLocations(rectangles, locations, w, h, confidance): # Gets (x,y,w,h) locations and builds a rectangle by
-                                                                  # making a top left point and a botton right point.
-                                                                  # getting the confidance for each proper location and
-                                                                  # saving it in the rectangle for later use.
+def __createRectanglesFromLocations(rectangles, locations, w, h, confidence):
+    # Gets (x,y,w,h) locations and builds a rectangle by making a top left point and a botton right point.
+    # getting the proper confidence for each proper location and saving it in the rectangle for later use.
     i = 0
     for loc in locations:
-        rec = [int(loc[0]), int(loc[1]), w + loc[0], h + loc[1], confidance[i]]  # x, y, width, height
-        rectangles.append(rec)  # append two times in cause there is only one rectangle around an area so
-        #rectangles.append(rec)  # groupRectangles wont remove it.
+        rec = [int(loc[0]), int(loc[1]), w + loc[0], h + loc[1], confidence[i]]  # x, y, width, height
+        rectangles.append(rec)
         i += 1
 
 
-def __getDetectionConfidanceList(matchResult, locations): #By getting the value of the pixel, we can know our confidance
-                                                          #in the possability of getting the correct object.
-    confidance = []
+def __getDetectionConfidenceList(matchResult, locations):
+    # By getting the value of the pixel, we can know our confidence in the possibility of getting the correct object.
+    # We make a confidence list by using the positions that locations list, and takeing the value at that position
+    # from the matchResult. the confidence list will be in the same order as the locations list so merging everything
+    # into rectangles wont be a problem.
+    confidence = []
     for y, x in locations:
-        confidance.append(matchResult[x, y])
+        confidence.append(matchResult[x, y])
 
-    return confidance
+    return confidence
 
 
-def __detectObjectByTemplate(imgToDetect, template, threshold, rectangles):  # inserts result values into rectangles.
+def __detectObjectByTemplate(imgToDetect, template, threshold, rectangles):
+    #Detects the object by using matchTemplate and a threshold, will get locations, and confidance rating for each
+    #detection and convert everything to rectangels, then update the given rectangles list.
+
+    #Inserts result values into rectangles.
     templateWidth = template.shape[1]
     templateHeight = template.shape[0]
     matchResult = cv2.matchTemplate(imgToDetect, template, cv2.TM_CCOEFF_NORMED)
-    locations = np.where(matchResult >= threshold)  # get all the suspect points from the result by the threshold.
-    locations = list(zip(*locations[::-1]))  # change the presentation type of the points into tuples.
-    if len(locations):
-        confidance = __getDetectionConfidanceList(matchResult, locations)
+    # Get all the suspect points from the result by the threshold.
+    locations = np.where(matchResult >= threshold)
+    # Convert the type of the points into tuples.
+    locations = list(zip(*locations[::-1]))
+    if len(locations): #If we got detections
+        #Get confidance list, that its order is the same as the locations list order.
+        confidance = __getDetectionConfidenceList(matchResult, locations)
+        #Update rectangles with new rectangels
         __createRectanglesFromLocations(rectangles, locations, templateWidth, templateHeight, confidance)
 
 
 
-def __groupOverlappingRectangles(rectangles, overlapThresh):  # merging overlapping rectangles by a given
-                                                              # threshold, using "max_suppression_fast" way.
+def __groupOverlappingRectangles(rectangles, overlapThresh):
+    # merging overlapping rectangles by a given
+    # threshold, using "max_suppression_fast" way.
+
     # if there are no rectangles, return an empty list
     if len(rectangles) == 0:
         return []
@@ -120,20 +121,23 @@ def __groupOverlappingRectangles(rectangles, overlapThresh):  # merging overlapp
     return rectangles[pick].astype("int")  # returns the rectangles as int for later calculations.
 
 
-def DetectPositive(imgToDetect, PTemplateList, positiveThreshold, rectanglesEps): # returns detected ROI's in the rectangles
+def DetectPositive(imgToDetect, PTemplateList, positiveThreshold, rectanglesEps):
+    # returns detected ROI's in the rectangles
     rectanglesToReturn = []
-    for template in PTemplateList: # Every loop, detect the object with the current template, and update "rectanglesToReturn"
+    # Every loop, detect the object with the current template, and update "rectanglesToReturn"
+    for template in PTemplateList:
         __detectObjectByTemplate(imgToDetect, template, positiveThreshold, rectanglesToReturn)
 
-    rectanglesToReturn = __groupOverlappingRectangles(rectanglesToReturn, rectanglesEps)
+    # Remove overlapping rectangles with the FNMS method.
     rectanglesToReturn = __groupOverlappingRectangles(rectanglesToReturn, rectanglesEps)
 
     return rectanglesToReturn
 
 
-def DetectNegative(imgToDetect, NTemplateList, rectangles, negativeThreshold): #Detects false positive by using matchTemplate
-                                                                               #on every rectangle for every negative template by a negativeThreshold.
-                                                                               #If it does find, it will remove the rectangle from the rectangle list.
+def DetectNegative(imgToDetect, NTemplateList, rectangles, negativeThreshold):
+    # Detects false positive by using matchTemplate
+    # on every rectangle for every negative template by a negativeThreshold.
+    # If it does find, it will remove the rectangle from the rectangle list.
     for template in NTemplateList:
         tempRectangles = []
         for rec in rectangles:
@@ -148,6 +152,7 @@ def DetectNegative(imgToDetect, NTemplateList, rectangles, negativeThreshold): #
 
 
 def DrawRectanglesOnImage(rectangles, imgToDrawOn):
+    # Define line color and type, then loop over all rectangles and draw them on the image.
     lineColor = (255, 0, 0)
     lineType = cv2.LINE_4
 

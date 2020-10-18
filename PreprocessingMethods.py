@@ -2,7 +2,10 @@ import glob
 import cv2
 import numpy as np
 
-isColorImage = 1  # 1 for color, 0 for greyscale
+# Declare variables.
+
+# 1 for color, 0 for greyscale.
+isColorImage = 1
 pictureNewSize = (600, 400)
 templatesNewSize = (200, 200)
 negativeTemplateNewSize = (200,200)
@@ -23,7 +26,10 @@ laplasian = np.array([[-1, -1, -1],
                       [-1, -1, -1]], dtype=np.float32)
 
 
-def __preprocessImage(img, newSize): #Take image, resize it, then apply filters.
+def __preprocessImage(img, newSize):
+    # Take image, resize it, then apply filters. (not using padding on purpose, it may leave a
+    # border even after unpadding).
+
     img = cv2.GaussianBlur(img, (3, 3), 0, img)
     #img = cv2.filter2D(img, 0, laplasian)
     img = cv2.resize(img, newSize)
@@ -31,6 +37,7 @@ def __preprocessImage(img, newSize): #Take image, resize it, then apply filters.
     return img
 
 def __preprocessImages(images, filePath, newSize):
+    # loop over all given images, filter resize and save them.
     i = 1
 
     for img in images:
@@ -40,6 +47,7 @@ def __preprocessImages(images, filePath, newSize):
 
 
 def Preprocess():
+    # Preprocess all images, for size, take the corresponding var and reduce its value by percent, and cast as int.
     __preprocessImages(imagesList, FilePathForProcessedImages, pictureNewSize)
     __preprocessImages(PTemplateList, FilePathForProcessedPTemplates + bigPath, templatesNewSize)
     __preprocessImages(PTemplateList, FilePathForProcessedPTemplates + mediumPath, (int(templatesNewSize[0] * 0.75), int(templatesNewSize[1] * 0.75)))
