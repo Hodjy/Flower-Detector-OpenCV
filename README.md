@@ -1,7 +1,7 @@
 # Flower-Detector-OpenCV
 A program that uses template matching in order to detect objects (in this case, flowers) in images.   
-The program was made in a way that if the user would swap the positive template images to different image templates that focus on a different object (for example faces),   
-the program would attempt to detect it.   
+The program was made in a way that if the user would swap the positive template images to different image templates     
+that focus on a different object (for example faces), the program would attempt to detect it.     
 
 In order to run this program, simply download the files and run them with a python IDE.   
 
