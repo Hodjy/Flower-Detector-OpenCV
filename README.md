@@ -1,5 +1,5 @@
 # Flower-Detector-OpenCV
-A program that uses template matching in order to find object (in this case, flowers) in greyscale images.
+A program that uses template matching in order to find object (in this case, flowers) in images.
 
 In order to run this program, simply download the files and run them with a python IDE.
 
