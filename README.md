@@ -63,10 +63,48 @@ After finishing grouping it initiates negative detection that uses template matc
 ![image](https://user-images.githubusercontent.com/62711261/109805464-22d93e80-7c2c-11eb-84ed-ba8d2c466bc4.png)
 
 
-## Some results
+## Results
 
-Threshold 0.4: time elapsed 1.17~ seconds         
+### Examples
+
+Threshold 0.4, time elapsed 1.17~ seconds:         
 ![image](https://user-images.githubusercontent.com/62711261/109805182-cd9d2d00-7c2b-11eb-88ee-d930a83baf0c.png)
 
-Threshold 0.4: time elapsed 1.31~ seconds     
+Threshold 0.4, time elapsed 1.31~ seconds:         
 ![image](https://user-images.githubusercontent.com/62711261/109805276-ead1fb80-7c2b-11eb-93db-f75151645549.png)
+
+Threshold 0.4, time elapsed 1.13~ seconds:      
+![image](https://user-images.githubusercontent.com/62711261/109805893-ac890c00-7c2c-11eb-811b-dedc50e1d08d.png)       
+
+
+because the results were better for the lower amount of templates, I started with  the lower templates for the result phase.      
+
+After passing the threshold of 0.5, the results were mostly false negatives, so the graphs are focused on the thresholds between 0.1-0.5.       
+
+Success will be calculated by taking each true positive to flower ratio in every picture and averaging it across all pictures on that threshold.        
+
+Because the algorithm groups small rectangles when they overlap in a bigger one, I will account for the bigger one as success for all the batched flowers.        
+
+The amount of false positives for every picture across the threshold(positive threshold).         
+
+For the negative threshold, it will be equal to the positive threshold unless the positive threshold is smaller than 0.2, then the negative threshold will be 0.15. 
+
+### Graphs
+
+The data was calculated with 18 positive, and 13 negative templates. 26 images where used for detection.
+
+#### Success Graphs 
+
+![image](https://user-images.githubusercontent.com/62711261/109806734-b7906c00-7c2d-11eb-94e9-86e00dabf5da.png)     
+
+![image](https://user-images.githubusercontent.com/62711261/109806756-bf501080-7c2d-11eb-940c-055d64ac5cb0.png)     
+
+![image](https://user-images.githubusercontent.com/62711261/109806791-c8d97880-7c2d-11eb-8e9d-9131b4429b04.png)
+
+#### False Positive Graphs
+
+
+
+
+
+
