@@ -12,7 +12,7 @@ To decrease the sensitivity, increase the positive threshold to the maximum of 1
 By default, the algorithm compares the negative threshold (for false positive detection) to the positive threshold,       
 unless its below 2.0.       
 
-The following explenation is taken from my research file which i attached to the repository:        
+The following explenation is taken from my research:        
 
 ## Introduction
 
@@ -138,7 +138,7 @@ and didn't manage to remove them when compared them to negative templates that w
 
 ## Bibliography:
 
-matchTemplate - https://docs.opencv.org/master/d4/dc6/tutorial_py_template_matching.html
+matchTemplate - https://docs.opencv.org/master/d4/dc6/tutorial_py_template_matching.html      
 FNMS - https://www.pyimagesearch.com/2015/02/16/faster-non-maximum-suppression-python/
 
 
